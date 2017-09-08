@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="myCtrl">
+    <head>
+        <meta charset="utf-8">
+        <title>Teste</title>
+    </head>
+    <body>
+        <form ng-submit="login()">
+            <input type="text" ng-model="name"/>
+            <input type="text" ng-model="passwd"/>
+            <button type="submit">SUB</button>
+        </form>
+
+        <button ng-click="teste()"> CLICK </button>
+
+        <table ng-repeat="m in msgs" ng-init="msgs=[]">
+            <tr>
+                <td>{{m.id}}</td><td>{{m.msg}}</td>
+            <tr>
+        </table>
+
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-resource.min.js"></script>
+    <script src="js/services/lb-services.js"></script>
+    <script>
+    angular.module('app', [
+        'lbServices',
+        'ngResource'
+    ])
+        .controller('myCtrl', ['$scope', 'Usuario',"$rootScope", "Teste",
+            function($scope, User, $rootScope, Teste) {
+                $scope.login = function(){
+                    User.login({username: $scope.name, password: $scope.passwd})
+                        .$promise
+                        .then(function(response) {
+                          $rootScope.currentUser = {
+                            id: response.user.id,
+                            tokenId: response.id,
+                            username: response.user.username
+                          };
+                        });
+                }
+                $scope.teste = function(){
+                    Teste.find().$promise.then(
+                        function(response){
+                            $scope.msgs = response;
+                        }
+                    );
+                }
+            }]);
+    </script>
+</html>
